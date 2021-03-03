@@ -114,7 +114,6 @@ module "s3_bucket" {
 #   }
 
 
-
   # S3 bucket-level Public Access Block configuration
   block_public_acls       = true
   block_public_policy     = true
@@ -127,93 +126,93 @@ module "s3_bucket" {
 
 
 # Log Bucket #
-module "log_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+# module "log_bucket" {
+#   source = "terraform-aws-modules/s3-bucket/aws"
 
-  lifecycle_rule = [
-    {
-      id      = "log"
-      enabled = true
-      prefix  = "log/"
+#   lifecycle_rule = [
+#     {
+#       id      = "log"
+#       enabled = true
+#       prefix  = "log/"
 
-      tags = {
-        rule      = "log"
-        autoclean = "true"
-      }
+#       tags = {
+#         rule      = "log"
+#         autoclean = "true"
+#       }
 
-      transition = [
-        {
-          days          = 30
-          storage_class = "ONEZONE_IA"
-          }, {
-          days          = 60
-          storage_class = "GLACIER"
-        }
-      ]
+#       transition = [
+#         {
+#           days          = 30
+#           storage_class = "ONEZONE_IA"
+#           }, {
+#           days          = 60
+#           storage_class = "GLACIER"
+#         }
+#       ]
 
-      expiration = {
-        days = 90
-      }
+#       expiration = {
+#         days = 90
+#       }
 
-      noncurrent_version_expiration = {
-        days = 30
-      }
-    },
-    {
-      id                                     = "log1"
-      enabled                                = true
-      prefix                                 = "log1/"
-      abort_incomplete_multipart_upload_days = 7
+#       noncurrent_version_expiration = {
+#         days = 30
+#       }
+#     },
+#     {
+#       id                                     = "log1"
+#       enabled                                = true
+#       prefix                                 = "log1/"
+#       abort_incomplete_multipart_upload_days = 7
 
-      noncurrent_version_transition = [
-        {
-          days          = 30
-          storage_class = "STANDARD_IA"
-        },
-        {
-          days          = 60
-          storage_class = "ONEZONE_IA"
-        },
-        {
-          days          = 90
-          storage_class = "GLACIER"
-        },
-      ]
+#       noncurrent_version_transition = [
+#         {
+#           days          = 30
+#           storage_class = "STANDARD_IA"
+#         },
+#         {
+#           days          = 60
+#           storage_class = "ONEZONE_IA"
+#         },
+#         {
+#           days          = 90
+#           storage_class = "GLACIER"
+#         },
+#       ]
 
-      noncurrent_version_expiration = {
-        days = 300
-      }
-    },
-  ]
+#       noncurrent_version_expiration = {
+#         days = 300
+#       }
+#     },
+#   ]
 
-  bucket                         = "${var.name}-logs-${random_pet.this.id}"
-  acl                            = "log-delivery-write"
-  force_destroy                  = true
-  attach_elb_log_delivery_policy = true
-}
+#   bucket                         = "${var.name}-logs-${random_pet.this.id}"
+#   acl                            = "log-delivery-write"
+#   force_destroy                  = true
+#   attach_elb_log_delivery_policy = true
+# }
 
 
 # CloudFront Bucket #
-data "aws_canonical_user_id" "current" {}
+# data "aws_canonical_user_id" "current" {}
 
-module "cloudfront_log_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+# module "cloudfront_log_bucket" {
+#   source = "terraform-aws-modules/s3-bucket/aws"
 
-  bucket = "${var.name}-cloudfront-logs-${random_pet.this.id}"
-  acl    = null # conflicts with default of `acl = "private"` so set to null to use grants
-  grant = [
-    {
-      type        = "CanonicalUser"
-      permissions = ["FULL_CONTROL"]
-      id          = data.aws_canonical_user_id.current.id
-    },
-    # {
-    # type        = "CanonicalUser"
-    # permissions = ["FULL_CONTROL"]
-    # id          = "c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0"
-    # # Ref. https://github.com/terraform-providers/terraform-provider-aws/issues/12512
-    # # Ref. https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html
-    # }
-  ]
-  force_destroy = true
-}
+#   bucket = "${var.name}-cloudfront-logs-${random_pet.this.id}"
+#   acl    = null # conflicts with default of `acl = "private"` so set to null to use grants
+#   grant = [
+#     {
+#       type        = "CanonicalUser"
+#       permissions = ["FULL_CONTROL"]
+#       id          = data.aws_canonical_user_id.current.id
+#     },
+#     # {
+#     # type        = "CanonicalUser"
+#     # permissions = ["FULL_CONTROL"]
+#     # id          = "c4c1ede66af53448b93c283ce9448c4ba468c9432aa01d700d3878632f77d2d0"
+#     # # Ref. https://github.com/terraform-providers/terraform-provider-aws/issues/12512
+#     # # Ref. https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html
+#     # }
+#   ]
+#   force_destroy = true
+# }
