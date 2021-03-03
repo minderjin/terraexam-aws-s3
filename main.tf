@@ -113,61 +113,6 @@ module "s3_bucket" {
 #     target_prefix = "log/"
 #   }
 
-#   lifecycle_rule = [
-#     {
-#       id      = "log"
-#       enabled = true
-#       prefix  = "log/"
-
-#       tags = {
-#         rule      = "log"
-#         autoclean = "true"
-#       }
-
-#       transition = [
-#         {
-#           days          = 30
-#           storage_class = "ONEZONE_IA"
-#           }, {
-#           days          = 60
-#           storage_class = "GLACIER"
-#         }
-#       ]
-
-#       expiration = {
-#         days = 90
-#       }
-
-#       noncurrent_version_expiration = {
-#         days = 30
-#       }
-#     },
-#     {
-#       id                                     = "log1"
-#       enabled                                = true
-#       prefix                                 = "log1/"
-#       abort_incomplete_multipart_upload_days = 7
-
-#       noncurrent_version_transition = [
-#         {
-#           days          = 30
-#           storage_class = "STANDARD_IA"
-#         },
-#         {
-#           days          = 60
-#           storage_class = "ONEZONE_IA"
-#         },
-#         {
-#           days          = 90
-#           storage_class = "GLACIER"
-#         },
-#       ]
-
-#       noncurrent_version_expiration = {
-#         days = 300
-#       }
-#     },
-#   ]
 
 
   # S3 bucket-level Public Access Block configuration
@@ -184,6 +129,62 @@ module "s3_bucket" {
 # Log Bucket #
 module "log_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
+
+  lifecycle_rule = [
+    {
+      id      = "log"
+      enabled = true
+      prefix  = "log/"
+
+      tags = {
+        rule      = "log"
+        autoclean = "true"
+      }
+
+      transition = [
+        {
+          days          = 30
+          storage_class = "ONEZONE_IA"
+          }, {
+          days          = 60
+          storage_class = "GLACIER"
+        }
+      ]
+
+      expiration = {
+        days = 90
+      }
+
+      noncurrent_version_expiration = {
+        days = 30
+      }
+    },
+    {
+      id                                     = "log1"
+      enabled                                = true
+      prefix                                 = "log1/"
+      abort_incomplete_multipart_upload_days = 7
+
+      noncurrent_version_transition = [
+        {
+          days          = 30
+          storage_class = "STANDARD_IA"
+        },
+        {
+          days          = 60
+          storage_class = "ONEZONE_IA"
+        },
+        {
+          days          = 90
+          storage_class = "GLACIER"
+        },
+      ]
+
+      noncurrent_version_expiration = {
+        days = 300
+      }
+    },
+  ]
 
   bucket                         = "${var.name}-logs-${random_pet.this.id}"
   acl                            = "log-delivery-write"
