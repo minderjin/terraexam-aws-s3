@@ -14,6 +14,30 @@ resource "random_pet" "this" {
 data "aws_canonical_user_id" "current" {}
 
 resource "aws_iam_role" "this" {
+
+  policy = <<EOT
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::${local.bucket_name}"
+    }
+  ]
+
+}
+EOT
+
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -104,7 +128,6 @@ module "s3_bucket" {
         ReplaceKeyPrefixWith : "documents/"
       }
     }])
-
   }
 
   logging = {
