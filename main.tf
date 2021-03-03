@@ -33,8 +33,6 @@ EOF
 }
 
 resource "aws_iam_policy" "policy_one" {
-  #   name = "policy-618033"
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -48,8 +46,6 @@ resource "aws_iam_policy" "policy_one" {
 }
 
 resource "aws_iam_policy" "policy_two" {
-  #   name = "policy-381966"
-
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -82,7 +78,12 @@ data "aws_iam_policy_document" "bucket_policy" {
 
 # General Bucket #
 module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  # public registry
+#   source = "terraform-aws-modules/s3-bucket/aws"
+  
+  # private registry
+  source  = "app.terraform.io/ckj/s3-bucket/aws"
+  version = "1.17.0"
 
   bucket        = local.bucket_name
   acl           = "private"
