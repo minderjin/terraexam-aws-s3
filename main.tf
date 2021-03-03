@@ -14,30 +14,6 @@ resource "random_pet" "this" {
 data "aws_canonical_user_id" "current" {}
 
 resource "aws_iam_role" "this" {
-
-  policy = <<EOT
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "s3:ListAllMyBuckets"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    },
-    {
-      "Action": [
-        "s3:*"
-      ],
-      "Effect": "Allow",
-      "Resource": "arn:aws:s3:::${local.bucket_name}"
-    }
-  ]
-
-}
-EOT
-
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -53,6 +29,38 @@ EOT
   ]
 }
 EOF
+  
+  managed_policy_arns = [aws_iam_policy.policy_one.arn, aws_iam_policy.policy_two.arn]
+}
+
+resource "aws_iam_policy" "policy_one" {
+#   name = "policy-618033"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = ["ec2:**"]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "policy_two" {
+#   name = "policy-381966"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = ["s3:*"]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
 }
 
 data "aws_iam_policy_document" "bucket_policy" {
