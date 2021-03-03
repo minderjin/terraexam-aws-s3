@@ -81,9 +81,10 @@ module "s3_bucket" {
   # public registry
 #   source = "terraform-aws-modules/s3-bucket/aws"
   
-  # private registry
-  source  = "app.terraform.io/ckj/s3-bucket/aws"
-  version = "1.17.0"
+  # private registry    
+  # 각 organization의 Module에 등록되어있는 private registry 경로로 변경
+  source  = "app.terraform.io/terraexam/s3/aws"
+  version = "1.0.0"
 
   bucket        = local.bucket_name
   acl           = "private"
