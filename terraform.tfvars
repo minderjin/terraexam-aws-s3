@@ -29,3 +29,35 @@ tags = {
   Terraform   = "true"
   Environment = "dev"
 }
+
+bucket_name   = "example-test-bucket-name"
+acl           = "private"
+force_destroy = true
+attach_policy = true
+versioning = {
+  enabled = false
+}
+
+#   website = {
+#     index_document = "index.html"
+#     error_document = "error.html"
+#     routing_rules = jsonencode([{
+#       Condition : {
+#         KeyPrefixEquals : "docs/"
+#       },
+#       Redirect : {
+#         ReplaceKeyPrefixWith : "documents/"
+#       }
+#     }])
+#   }
+
+#   logging = {
+#     target_bucket = module.log_bucket.this_s3_bucket_id
+#     target_prefix = "log/"
+#   }
+
+# S3 bucket-level Public Access Block configuration
+block_public_acls       = true
+block_public_policy     = true
+ignore_public_acls      = true
+restrict_public_buckets = true
